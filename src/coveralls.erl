@@ -100,6 +100,7 @@ convert_file([[_|_]|_]=Filenames, Report, S) ->
                        Filenames),
   ConvertedModules = convert_modules(S),
   Cmodules = get_c_modules(),
+  io:format("~n JSONFILE: ~p~n Cmodules: ~p~n", [os:getenv("JSONFILE"), Cmodules]),
   jsx:encode(Report#{source_files => ConvertedModules ++ Cmodules}, []).
 
 get_c_modules() ->
