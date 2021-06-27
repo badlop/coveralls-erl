@@ -100,8 +100,9 @@ convert_file([[_|_]|_]=Filenames, Report, S) ->
                        Filenames),
   ConvertedModules = convert_modules(S),
   Cmodules = get_c_modules(),
-  io:format("~n JSONFILE: ~p~n Cmodules: ~p~n", [os:getenv("JSONFILE"), Cmodules]),
-  jsx:encode(Report#{source_files => ConvertedModules ++ Cmodules}, []).
+  Report2 = Report#{source_files => ConvertedModules ++ Cmodules},
+  io:format("~n JSONFILE: ~p~n Report2: ~p~n", [os:getenv("JSONFILE"), Report2]),
+  jsx:encode(Report2, []).
 
 get_c_modules() ->
     case os:getenv("JSONFILE") of
@@ -128,6 +129,7 @@ send(Json, #s{poster=Poster, poster_init=Init}) ->
   Boundary = ["----------", integer_to_list(?random:uniform(1000))],
   Type     = "multipart/form-data; boundary=" ++ Boundary,
   Body     = to_body(Json, Boundary),
+  io:format("~n Body: ~p~n", [Body]),
   R        = Poster(post, {?COVERALLS_URL, [], Type, Body}, [], []),
   {ok, {{_, ReturnCode, _}, _, Message}} = R,
   case ReturnCode of
